@@ -1,12 +1,9 @@
 from bs4 import BeautifulSoup as BS
 import requests
 from models import *
-from sqlalchemy import and_, asc, insert,select
+from sqlalchemy import select
 import re
 import datetime
-
-from sqlalchemy.orm import aliased
-from sqlalchemy import and_
 
 def get_routes(url:str) -> dict:
     """ 
@@ -60,7 +57,7 @@ def get_routes(url:str) -> dict:
                 answer[current].append(link)        
         return answer
 
-def get_time(url:str) -> dict[dict[list[str]]]:
+def get_time(url:str) -> dict:
     """
     Выдаёт время остановки на конкретной остановке по url остановки
     {'weekday':['5:34'],'weekend':['2:30']}
@@ -94,7 +91,7 @@ def get_similar_station(text:str) -> set[str]:
     session.close()
     return answer
 
-def is_dayoff() -> int:
+def is_dayoff() -> bool:
     """
     Возвращает выходной ли день.
     0 - Рабочий
@@ -140,7 +137,7 @@ def get_current_time():
     time = datetime.datetime.time(datetime.datetime.now())
     return time
 
-def get_closest_routes(current: str, finish: str):
+def get_closest_routes(current: str, finish: str) -> dict:
     """
     Выдаёт ближайшие маршруты в виде:
     {"Маршрут": "Ближайшее время прибытия"}
@@ -149,10 +146,10 @@ def get_closest_routes(current: str, finish: str):
     valid_routes = get_routes_by_two_stations(current=current, finish=finish)
     answer = {}
     alls = list()
-    if not is_dayoff():
-        day = "weekend"
-    else:
+    if is_dayoff():
         day = "weekday"
+    else:
+        day = "weekend"
     for route in valid_routes:
         alls.append(session.query(RouteStationAT).\
         join(Station, Station.id == RouteStationAT.station_id).\

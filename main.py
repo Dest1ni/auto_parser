@@ -5,7 +5,7 @@ from sqlalchemy import insert
 from router import *
 from loguru import logger
 
-def total_parse():
+def total_parse() -> None:
     """
     Парсит все городские автобусные маршруты
     """
@@ -36,7 +36,8 @@ def total_parse():
                             session.execute(stmt_watch)
                             session.commit()
                 logger.success(f"Маршрут {route_number} спаршен")
-                
+        logger.success("Все маршруты спаршены")
+
 if __name__ == "__main__":
     session = Session()
     total_parse()

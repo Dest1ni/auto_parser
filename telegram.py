@@ -10,7 +10,6 @@ from aiogram import F
 from aiogram import *
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
-import sqlite3
 from models import *
 
 BOT_TOKEN = TOKEN
@@ -68,7 +67,6 @@ async def find_start(message: Message,state: FSMContext):
         
     ]
     kb.append([types.KeyboardButton(text="Отмена")])
-    print(kb)
     keyboard = types.ReplyKeyboardMarkup(
         keyboard=kb,
         resize_keyboard=True,
